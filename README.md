@@ -26,7 +26,7 @@ In your target view controller create an unwind point method. Your unwind method
 class MyCustomViewController: UIViewController {
     // Content of your ViewController...
 
-    @objc func unnwindToMe() {
+    @objc func unwindToMe() {
         // Your unwind logic
     }
 }
@@ -46,7 +46,7 @@ You can also pass one parameter via this unwind operation
 Just add your parameter to your unwind point method
 
 ```swift
-    @objc func unnwindToMe(_ parameter: Any) {
+    @objc func unwindToMe(_ parameter: Any) {
         // You may need binding here
         guard let parameter = parameter as? MyCustomType else { return }
         // Your unwind logic
