@@ -10,6 +10,14 @@ Supported Containers
 - [ ] `UISplitViewController`
 - [x] `Your Custom Containers`
 
+## Integration
+
+Currently It is just usable via SPM. There is no future plan for add support for other package managers 
+
+```
+https://github.com/ekoll/UIKit-Unwinder
+```
+
 ## Usage
 
 In your target view controller create an unwind point method. Your unwind method must be ```@objc``` method.
