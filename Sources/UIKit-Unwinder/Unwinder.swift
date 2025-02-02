@@ -6,6 +6,7 @@ public enum Unwinder {
     public static func unwind(
         from source: UIViewController,
         target selector: Selector,
+        animated: Bool = true,
         parameter: Any? = nil
     ) {
         var current: UIResponder? = source
@@ -18,7 +19,7 @@ public enum Unwinder {
             }
 
             DispatchQueue.main.async {
-                executeUnwind(for: child, parent: child) {
+                executeUnwind(for: child, parent: child, animated: animated) {
                     child.performSelector(onMainThread: selector, with: parameter, waitUntilDone: false)
                 }
             }
@@ -29,16 +30,25 @@ public enum Unwinder {
     private static func executeUnwind(
         for viewController: UIViewController,
         parent: UIViewController,
+        animated: Bool = true,
         completion: @escaping @MainActor () -> Void
     ) {
         if let highParent = parent.parent {
-            executeUnwind(for: parent, parent: highParent) {
-                parent.executeUnwind(forChild: viewController, completion: completion)
+            executeUnwind(for: parent, parent: highParent, animated: animated) {
+                parent.executeUnwind(
+                    forChild: viewController,
+                    animated: animated,
+                    completion: completion
+                )
             }
 
             return
         }
 
-        parent.executeUnwind(forChild: viewController, completion: completion)
+        parent.executeUnwind(
+            forChild: viewController,
+            animated: animated,
+            completion: completion
+        )
     }
 }

@@ -11,6 +11,7 @@ extension UIViewController {
 
     @objc public func executeUnwind(
         forChild viewController: UIViewController,
+        animated: Bool = true,
         completion: @escaping @MainActor () -> Void
     ) {
         var controller = self
@@ -25,7 +26,7 @@ extension UIViewController {
         }
 
         if isOnBackground {
-            dismiss(animated: true, completion: completion)
+            dismiss(animated: animated, completion: completion)
             return
         }
         completion()
@@ -47,14 +48,15 @@ extension UINavigationController {
 
     public override func executeUnwind(
         forChild viewController: UIViewController,
+        animated: Bool = true,
         completion: @escaping @MainActor () -> Void
     ) {
         if viewController == self {
-            super.executeUnwind(forChild: viewController, completion: completion)
+            super.executeUnwind(forChild: viewController, animated: animated, completion: completion)
             return
         }
 
-        popToViewController(viewController, animated: true)
+        popToViewController(viewController, animated: animated)
         DispatchQueue.main.async(execute: completion)
     }
 }
@@ -78,14 +80,21 @@ extension UITabBarController {
 
     public override func executeUnwind(
         forChild viewController: UIViewController,
+        animated: Bool = true,
         completion: @escaping @MainActor () -> Void
     ) {
         if viewController == self {
-            super.executeUnwind(forChild: viewController, completion: completion)
+            super.executeUnwind(forChild: viewController, animated: animated, completion: completion)
             return
         }
 
-        selectedViewController = viewController
+        if animated {
+            selectedViewController = viewController
+        } else {
+            UIView.performWithoutAnimation {
+                selectedViewController = viewController
+            }
+        }
         DispatchQueue.main.async(execute: completion)
     }
 }
